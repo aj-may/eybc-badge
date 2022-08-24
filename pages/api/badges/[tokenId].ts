@@ -5,7 +5,12 @@ type MetadataResponse = {
   name: string,
   description: string,
   image: string,
-  email: string,
+  attributes: [
+    {
+      trait_type: 'Email',
+      value: string,
+    }
+  ]
 }
 
 type ErrorResponse = {
@@ -36,6 +41,11 @@ export default async function handler(
     name: badge.handle,
     description: '',
     image: 'https://badge.eybc.xyz/img/user.png',
-    email: badge.email,
+    attributes: [
+      {
+        trait_type: 'Email',
+        value: badge.email,
+      },
+    ],
   });
 }
