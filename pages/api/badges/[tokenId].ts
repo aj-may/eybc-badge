@@ -5,7 +5,6 @@ type MetadataResponse = {
   name: string,
   description: string,
   image: string,
-  background_color: string,
   attributes: [
     {
       trait_type: 'Email',
@@ -40,9 +39,8 @@ export default async function handler(
 
   res.json({
     name: badge.handle,
-    description: '', // TODO: allow users to set a bio for this field
-    image: `https://badge.eybc.xyz/api/badge-images/${badge.tokenId}.png`,
-    background_color: '#ffffe3',
+    description: '',
+    image: 'https://badge.eybc.xyz/img/user.png',
     attributes: [
       {
         trait_type: 'Email',
