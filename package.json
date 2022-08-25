@@ -10,15 +10,17 @@
   },
   "dependencies": {
     "@prisma/client": "^4.2.1",
-    "canvas": "^2.9.3",
+    "@react-three/drei": "^9.23.7",
     "next": "12.2.5",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-three-fiber": "^6.0.13"
   },
   "devDependencies": {
     "@types/node": "18.7.13",
     "@types/react": "18.0.17",
     "@types/react-dom": "18.0.6",
+    "@types/three": "^0.143.1",
     "eslint": "8.22.0",
     "eslint-config-next": "12.2.5",
     "prisma": "^4.2.1",
