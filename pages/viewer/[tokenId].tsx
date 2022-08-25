@@ -1,30 +1,38 @@
-import type { AppProps } from 'next/app'
-import { Canvas, extend, useThree } from '@react-three/fiber';
+import { Badge, PrismaClient } from '@prisma/client';
+import { Canvas } from '@react-three/fiber';
 import CardViewer from 'components/three/cardViewer';
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
+import { GetServerSideProps, NextPage } from 'next';
 
-extend({ EffectComposer, RenderPass, UnrealBloomPass });
+const prisma = new PrismaClient();
 
-function Viewer({ Component, pageProps }: AppProps) {
-
-
-  return (
-    <div style={{ background: 'black', height: '100vh', width: '100vw'}}>
-        <Canvas
-          camera={{ position: [1,0,5]}}>
-            <ambientLight intensity={.5}/>
-            {/* <pointLight position={[10, 10, 10]} /> */}
-          
-            <CardViewer
-              text="PERSONNAME"
-              profileImgSrc='/models/defaultProfile.jpg'
-            />
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { tokenId } = context.query;
+  if (!tokenId || typeof tokenId !== 'string')
+    return { notFound: true };
   
-        </Canvas>
-    </div>
-  )
+  const badge = await prisma.badge.findUnique({
+    where: {
+      tokenId: parseInt(tokenId),
+    },
+  });
+
+  if (!badge) return { notFound: true };
+
+  return {
+    props: { badge },
+  }
 }
 
-export default Viewer
+const Page: NextPage<{ badge: Badge}> = ({ badge }) =>
+  <div style={{ background: 'black', height: '100vh', width: '100vw'}}>
+    <Canvas camera={{ position: [1,0,5]}}>
+      <ambientLight intensity={.5}/>
+    
+      <CardViewer
+        text={badge.handle}
+        profileImgSrc='/models/defaultProfile.jpg'
+      />
+    </Canvas>
+  </div>;
+
+export default Page
