@@ -9,15 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.2.9",
+    "@emotion/react": "^11.10.0",
+    "@emotion/styled": "^11.10.0",
     "@prisma/client": "^4.2.1",
+    "@react-three/drei": "^9.23.7",
+    "@react-three/fiber": "^8.6.0",
+    "framer-motion": "^7.2.1",
     "next": "12.2.5",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "three": "^0.143.0"
   },
   "devDependencies": {
     "@types/node": "18.7.13",
     "@types/react": "18.0.17",
     "@types/react-dom": "18.0.6",
+    "@types/three": "^0.143.1",
     "eslint": "8.22.0",
     "eslint-config-next": "12.2.5",
     "prisma": "^4.2.1",
