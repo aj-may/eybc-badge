@@ -7,6 +7,10 @@ const nextConfig = {
       source: '/metadata/:tokenId*',
       destination: '/api/badges/:tokenId*',
     },
+    {
+      source: '/metadata',
+      destination: '/api/contract',
+    },
   ]
 };
 
