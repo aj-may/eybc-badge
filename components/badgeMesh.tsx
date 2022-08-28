@@ -8,8 +8,8 @@ type BadgeProps = {
 };
 
 const BadgeMesh = ({ handle, email}: BadgeProps) => {
-  const gltf = useGLTF('https://badge.eybc.xyz/models/badge.gltf');
-  const texture = useTexture('https://badge.eybc.xyz/img/user.png');
+  const gltf = useGLTF('/models/badge.gltf');
+  const texture = useTexture('/img/user.png');
   const creditCard = gltf.scene.getObjectByName('credit_card') as Mesh;
 
   return <Suspense fallback={null}>
