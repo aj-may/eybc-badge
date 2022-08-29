@@ -46,7 +46,7 @@ export default async function handler(
     attributes: [
       {
         trait_type: 'Badge Number',
-        value: badge.tokenId.toString().padStart(4, '0'),
+        value: badge.tokenId.toString().padStart(5, '0'),
       },
     ],
   });
