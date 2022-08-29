@@ -3,9 +3,10 @@ import { Euler, Mesh } from "three";
 import { useGLTF, useTexture, Text } from "@react-three/drei";
 import { Badge } from "@prisma/client";
 
-const BadgeMesh = ({ handle, tokenId }: Badge) => {
+const BadgeMesh = ({ handle, tokenId, photo }: Badge) => {
   const gltf = useGLTF('/models/badge.gltf');
-  const texture = useTexture('/img/user.png');
+  const textureUrl = photo ? photo : '/img/user.png';
+  const texture = useTexture(textureUrl);
   const creditCard = gltf.scene.getObjectByName('credit_card') as Mesh;
 
   return <Suspense fallback={null}>

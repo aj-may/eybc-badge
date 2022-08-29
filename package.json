@@ -7,12 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "issue": "ts-node ./scripts/issue.ts"
+    "issue": "ts-node ./scripts/issue.ts",
+    "setup-bucket": "ts-node ./scripts/setupBucket.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.2.9",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
+    "@google-cloud/storage": "^6.4.1",
     "@prisma/client": "^4.2.1",
     "@react-three/drei": "^9.23.7",
     "@react-three/fiber": "^8.6.0",

@@ -12,4 +12,5 @@ model Badge {
   tokenId   Int     @unique
   handle    String
   email     String
+  photo     String?
 }
