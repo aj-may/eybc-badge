@@ -36,7 +36,7 @@ export default function Page({ badge }: PageProps) {
     <Canvas camera={{ position: [0,0,-10]}}>
       <ambientLight intensity={0.9} />
       <OrbitControls autoRotate />
-      <BadgeMesh handle={badge.handle} email={badge.email} />
+      <BadgeMesh {...badge} />
     </Canvas>
   </Box>;
 }

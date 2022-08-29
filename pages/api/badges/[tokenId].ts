@@ -8,7 +8,7 @@ type MetadataResponse = {
   animation_url: string,
   attributes: [
     {
-      trait_type: 'Email',
+      trait_type: 'Badge Number',
       value: string,
     }
   ]
@@ -45,8 +45,8 @@ export default async function handler(
     animation_url: `https://badge.eybc.xyz/badges/${badge.tokenId}`,
     attributes: [
       {
-        trait_type: 'Email',
-        value: badge.email,
+        trait_type: 'Badge Number',
+        value: badge.tokenId.toString().padStart(4, '0'),
       },
     ],
   });
