@@ -13,7 +13,10 @@ const BadgeMesh = ({ handle, tokenId, photo }: Badge) => {
     <mesh geometry={creditCard.geometry} material={creditCard.material} rotation={creditCard.rotation}>
       <mesh position={[-1.5,-0.051,0]} rotation={new Euler(Math.PI/2, 0, Math.PI/2)}>
         <circleGeometry args={[1.5, 30]} />
-        <meshBasicMaterial color="#999" map={texture} />
+        {photo ?
+          <meshBasicMaterial color="#FFF" map={texture} reflectivity={0} /> :
+          <meshBasicMaterial color="#999" map={texture} reflectivity={0} />
+        }
       </mesh>
 
       <Text color="#000" fontSize={0.8} position={[2.7,-0.051,0]} rotation={new Euler(Math.PI/2, 0, Math.PI/2)}>
