@@ -13,16 +13,14 @@ type PromptResponse = {
   email: string,
 }
 
-type BlocknativeFeeData = {
-  confidence: number,
-  price: number,
-  maxPriorityFeePerGas: number,
-  maxFeePerGas: number,
+type FeeData = {
+  maxPriorityFee: number,
+  maxFee: number,
 };
 
-const { INFURA_KEY, BADGE_OWNER_KEY, BLOCKNATIVE_KEY } = process.env;
-if (!INFURA_KEY || !BADGE_OWNER_KEY || !BLOCKNATIVE_KEY)
-  throw new Error('INFURA_KEY, BADGE_OWNER_KEY, and BLOCKNATIVE_KEY must be set in the environment');
+const { INFURA_KEY, BADGE_OWNER_KEY } = process.env;
+if (!INFURA_KEY || !BADGE_OWNER_KEY)
+  throw new Error('INFURA_KEY and BADGE_OWNER_KEY must be set in the environment');
 
 const contractAddress = '0x95e6603e219e6D08A9AE46f29201fA1610FA76B4';
 const abi = [
@@ -38,17 +36,10 @@ const signer = new ethers.Wallet(BADGE_OWNER_KEY, provider);
 const contract = new ethers.Contract(contractAddress, abi, signer);
 const prismaClient = new PrismaClient();
 
-const getBlocknativeFeeData = async (): Promise<BlocknativeFeeData> => {
-  const { data } = await axios.get('https://api.blocknative.com/gasprices/blockprices', {
-    headers: { Authorization: BLOCKNATIVE_KEY },
-    params: {
-      chainid: '137',
-      withBaseFees: 'false',
-    },
-  });
-
-  return data.blockPrices[0].estimatedPrices.find((obj: BlocknativeFeeData) => obj.confidence == 90);
-};
+const getFeeData = async (): Promise<FeeData> => {
+  const { data } = await axios.get('https://gasstation-mainnet.matic.network/v2');
+  return data.safeLow;
+}
 
 async function main() {
   const SYSTEM_ROLE = await contract.SYSTEM_ROLE() as string;
@@ -80,15 +71,15 @@ async function main() {
 
   if (balance.gt(0)) throw new Error('Wallet already has a badge');
 
-  const { maxFeePerGas, maxPriorityFeePerGas } = await getBlocknativeFeeData();
-  if (!maxFeePerGas || !maxPriorityFeePerGas ) throw new Error('Unable to get fee data');
+  const { maxFee, maxPriorityFee } = await getFeeData();
+  if (!maxFee || !maxPriorityFee ) throw new Error('Unable to get fee data');
 
   const transaction = await contract.issue(address, {
-    maxFeePerGas: parseUnits(maxFeePerGas.toString(), 'gwei'),
-    maxPriorityFeePerGas: parseUnits(maxPriorityFeePerGas.toString(), 'gwei'),
+    maxFeePerGas: parseUnits(maxFee.toFixed(4).toString(), 'gwei'),
+    maxPriorityFeePerGas: parseUnits(maxPriorityFee.toFixed(4).toString(), 'gwei'),
   }) as ContractTransaction;
 
-  await transaction.wait();
+  await transaction.wait(2);
 
   const tokenId = await contract.tokenOfOwnerByIndex(address, 0) as BigNumber;
 
