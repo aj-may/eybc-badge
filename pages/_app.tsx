@@ -19,26 +19,26 @@ import { RainbowKitSiweNextAuthProvider } from '@rainbow-me/rainbowkit-siwe-next
 import theme from 'lib/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const { chains, provider } = configureChains(
-  [chain.polygon],
-  [publicProvider()],
-);
+// const { chains, provider } = configureChains(
+//   [chain.polygon],
+//   [publicProvider()],
+// );
 
-const { connectors } = getDefaultWallets({
-  appName: 'BY Blockchain Badges',
-  chains
-});
+// const { connectors } = getDefaultWallets({
+//   appName: 'BY Blockchain Badges',
+//   chains
+// });
 
-const wagmiClient = createClient({
-  autoConnect: true,
-  connectors,
-  provider
-})
+// const wagmiClient = createClient({
+//   autoConnect: true,
+//   connectors,
+//   provider
+// })
 
-const queryClient = new QueryClient();
+// const queryClient = new QueryClient();
 
 function App({ Component, pageProps, router}: AppProps) {
-  const isBadgeRoute = router.route === '/badges/[tokenId]';
+  //const isBadgeRoute = router.route === '/badges/[tokenId]';
 
   return <>
     <Head>
@@ -48,10 +48,11 @@ function App({ Component, pageProps, router}: AppProps) {
       <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     </Head>
 
-    {isBadgeRoute ? <ChakraProvider resetCSS theme={theme}>
+    <ChakraProvider resetCSS theme={theme}>
       <Component {...pageProps} />
-    </ChakraProvider> :
-    <WagmiConfig client={wagmiClient}>
+    </ChakraProvider>
+
+    {/* <WagmiConfig client={wagmiClient}>
       <SessionProvider refetchInterval={0} session={pageProps.session}>
         <RainbowKitSiweNextAuthProvider>
           <RainbowKitProvider chains={chains} theme={darkTheme()}>
@@ -63,7 +64,7 @@ function App({ Component, pageProps, router}: AppProps) {
           </RainbowKitProvider>
         </RainbowKitSiweNextAuthProvider>
       </SessionProvider>
-    </WagmiConfig>}
+    </WagmiConfig> */}
   </>;
 }
 
