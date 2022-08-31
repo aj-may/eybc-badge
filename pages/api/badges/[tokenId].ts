@@ -1,18 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { Badge, PrismaClient } from '@prisma/client';
+import { withAuth } from 'lib/auth';
 import type { NextApiRequest, NextApiResponse } from 'next';
-
-type MetadataResponse = {
-  name: string,
-  description: string,
-  image: string,
-  animation_url: string,
-  attributes: [
-    {
-      trait_type: 'Badge Number',
-      value: string,
-    }
-  ]
-}
 
 type ErrorResponse = {
   error: string,
@@ -20,10 +8,7 @@ type ErrorResponse = {
 
 const prisma = new PrismaClient();
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<MetadataResponse | ErrorResponse>
-) {
+export default withAuth(async (req, res, session) => {
   const { tokenId } = req.query;
 
   if (!tokenId || typeof tokenId !== 'string')
@@ -38,16 +23,5 @@ export default async function handler(
   if (!badge)
     return res.status(404).json({ error: "Not Found" });
 
-  res.json({
-    name: badge.handle,
-    description: '',
-    image: 'https://badge.eybc.xyz/img/placeholder.png',
-    animation_url: `https://badge.eybc.xyz/badges/${badge.tokenId}`,
-    attributes: [
-      {
-        trait_type: 'Badge Number',
-        value: badge.tokenId.toString().padStart(5, '0'),
-      },
-    ],
-  });
-}
+  res.json(badge);
+});
