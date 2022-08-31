@@ -37,7 +37,9 @@ const wagmiClient = createClient({
 
 const queryClient = new QueryClient();
 
-function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps, router}: AppProps) {
+  const isBadgeRoute = router.route === '/badges/[tokenId]';
+
   return <>
     <Head>
       <title>EY Blockchain Badge</title>
@@ -46,6 +48,9 @@ function App({ Component, pageProps }: AppProps) {
       <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     </Head>
 
+    {isBadgeRoute ? <ChakraProvider resetCSS theme={theme}>
+      <Component {...pageProps} />
+    </ChakraProvider> :
     <WagmiConfig client={wagmiClient}>
       <SessionProvider refetchInterval={0} session={pageProps.session}>
         <RainbowKitSiweNextAuthProvider>
@@ -58,7 +63,7 @@ function App({ Component, pageProps }: AppProps) {
           </RainbowKitProvider>
         </RainbowKitSiweNextAuthProvider>
       </SessionProvider>
-    </WagmiConfig>
+    </WagmiConfig>}
   </>;
 }
 
