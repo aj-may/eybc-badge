@@ -19,28 +19,20 @@ import { RainbowKitSiweNextAuthProvider } from '@rainbow-me/rainbowkit-siwe-next
 import theme from 'lib/theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// const { chains, provider } = configureChains(
-//   [chain.polygon],
-//   [publicProvider()],
-// );
+const { chains, provider } = configureChains(
+  [chain.polygon],
+  [publicProvider()],
+);
 
-// const { connectors } = getDefaultWallets({
-//   appName: 'BY Blockchain Badges',
-//   chains
-// });
+const { connectors } = getDefaultWallets({
+  appName: 'BY Blockchain Badges',
+  chains
+});
 
-// const wagmiClient = createClient({
-//   autoConnect: true,
-//   connectors,
-//   provider
-// })
-
-// const queryClient = new QueryClient();
+const queryClient = new QueryClient();
 
 function App({ Component, pageProps, router}: AppProps) {
-  //const isBadgeRoute = router.route === '/badges/[tokenId]';
-
-  return <>
+  if (router.route === '/badges/[tokenId]') return <>
     <Head>
       <title>EY Blockchain Badge</title>
       <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -51,8 +43,23 @@ function App({ Component, pageProps, router}: AppProps) {
     <ChakraProvider resetCSS theme={theme}>
       <Component {...pageProps} />
     </ChakraProvider>
+  </>;
 
-    {/* <WagmiConfig client={wagmiClient}>
+  const wagmiClient = createClient({
+    autoConnect: true,
+    connectors,
+    provider
+  })
+
+  return <>
+    <Head>
+      <title>EY Blockchain Badge</title>
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    </Head>
+
+    <WagmiConfig client={wagmiClient}>
       <SessionProvider refetchInterval={0} session={pageProps.session}>
         <RainbowKitSiweNextAuthProvider>
           <RainbowKitProvider chains={chains} theme={darkTheme()}>
@@ -64,7 +71,7 @@ function App({ Component, pageProps, router}: AppProps) {
           </RainbowKitProvider>
         </RainbowKitSiweNextAuthProvider>
       </SessionProvider>
-    </WagmiConfig> */}
+    </WagmiConfig>
   </>;
 }
 
