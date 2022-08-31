@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
+import { ErrorResponse } from 'lib/types';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { createRouter } from 'next-connect';
 
 type MetadataResponse = {
   name: string,
@@ -14,16 +16,10 @@ type MetadataResponse = {
   ]
 }
 
-type ErrorResponse = {
-  error: string,
-};
-
 const prisma = new PrismaClient();
+const router = createRouter<NextApiRequest, NextApiResponse<MetadataResponse | ErrorResponse>>();
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<MetadataResponse | ErrorResponse>
-) {
+router.get(async (req, res) => {
   const { tokenId } = req.query;
 
   if (!tokenId || typeof tokenId !== 'string')
@@ -38,7 +34,7 @@ export default async function handler(
   if (!badge)
     return res.status(404).json({ error: "Not Found" });
 
-  res.json({
+  return res.json({
     name: badge.handle,
     description: '',
     image: 'https://badge.eybc.xyz/img/placeholder.png',
@@ -50,4 +46,6 @@ export default async function handler(
       },
     ],
   });
-}
+});
+
+export default router.handler();

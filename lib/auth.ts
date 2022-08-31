@@ -5,6 +5,7 @@ import { SiweMessage } from "siwe";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { IncomingMessage } from "http";
 import { JWT } from "next-auth/jwt";
+import { NextHandler } from "next-connect";
 
 const ethereumProvider = CredentialsProvider({
   name: "Ethereum",
@@ -66,17 +67,11 @@ export const authOptions = {
   },
 };
 
-export function withAuth(
-  next: (
-    req: NextApiRequest,
-    res: NextApiResponse,
-    session: Session
-  ) => Promise<void>
-) {
-  return async (req: NextApiRequest, res: NextApiResponse) => {
-    const session = await unstable_getServerSession(req, res, authOptions);
-    if (!session) return res.status(403).json({ error: "Unauthorized" });
+export type NextApiRequestWithSession = NextApiRequest & { session?: Session };
 
-    await next(req, res, session);
-  };
-}
+export const authMiddleware = async (req: NextApiRequestWithSession, res: NextApiResponse, next: NextHandler) => {
+  const session = await unstable_getServerSession(req, res, authOptions);
+  if (!session) return res.status(403).json({ error: "Unauthorized" });
+  req.session = session;
+  return next();
+};
