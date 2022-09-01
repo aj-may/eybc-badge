@@ -5,11 +5,23 @@ import { NextApiResponse } from 'next';
 import { createRouter } from 'next-connect';
 import withJoi from 'next-joi';
 import Joi from 'joi';
+import { Storage } from '@google-cloud/storage';
+
+const storage = new Storage({
+  projectId: process.env.GOOGLE_PROJECT_ID,
+  credentials: {
+    client_email: process.env.GOOGLE_CLIENT_EMAIL,
+    private_key: process.env.GOOGLE_PRIVATE_KEY,
+  }
+});
 
 const patchSchema = {
   body: Joi.object({
     handle: Joi.string(),
-    photo: Joi.string(),
+    avatar: {
+      filename: Joi.string(),
+      url: Joi.string(),
+    },
   }).min(1),
 };
 
@@ -44,9 +56,22 @@ router.patch(validate(patchSchema), async (req, res) => {
   if (!tokenId || typeof tokenId !== 'string')
     return res.status(404).json({ error: "Not Found" });
 
+  const oldBadge = await prisma.badge.findUnique({
+    where: {
+      tokenId: parseInt(tokenId),
+    },
+  });
+
+  if (oldBadge && oldBadge.avatar) {
+    await storage
+      .bucket('badge-user-images')
+      .file(oldBadge.avatar.filename)
+      .delete();
+  }
+
   const badge = await prisma.badge.update({
     where: {
-      tokenId: 0,
+      tokenId: parseInt(tokenId),
     },
     data: req.body,
   })

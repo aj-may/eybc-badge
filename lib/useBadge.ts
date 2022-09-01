@@ -32,6 +32,19 @@ export default function useBadge(addressOrName: string = '0x95e6603e219e6D08A9AE
   return { isAuthenticated, isLoading, hasBadge, tokenId, badge };
 }
 
+async function uploadAvatar(file: File) {
+  const { data } = await axios.post('/api/signed-upload', { type: file.type });
+  const filename = data.filename as string;
+  const signedUrl = data.signedUrl as string;
+  const url = data.publicUrl as string;
+  
+  await axios.put(signedUrl, file, {
+    headers: { 'Content-Type': file.type },
+  });
+  
+  return { filename, url };
+}
+
 export function useUpdateBadge(addressOrName?: string) {
   const { tokenId } = useBadge(addressOrName);
   const queryClient = useQueryClient();
@@ -49,5 +62,19 @@ export function useUpdateBadge(addressOrName?: string) {
     }
   );
 
-  return { updateHandle };
+  const { mutateAsync: updateAvatar } = useMutation(
+    async (file: File) => {
+      if (!tokenId) throw new Error('tokenId not set');
+      const avatar = await uploadAvatar(file);
+      const { data } = await axios.patch(`/api/badges/${tokenId}`, { avatar });
+      return data;
+    },
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(['badge', tokenId]);
+      },
+    }
+  );
+
+  return { updateHandle, updateAvatar };
 }

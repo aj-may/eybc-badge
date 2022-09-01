@@ -3,9 +3,9 @@ import { Euler, Mesh } from "three";
 import { useGLTF, useTexture, Text } from "@react-three/drei";
 import { Badge } from "@prisma/client";
 
-const BadgeMesh = ({ handle, tokenId, photo }: Badge) => {
+const BadgeMesh = ({ handle, tokenId, avatar }: Badge) => {
   const gltf = useGLTF('/models/badge.gltf');
-  const textureUrl = photo ? photo : '/img/user.png';
+  const textureUrl = avatar ? avatar.url : '/img/user.png';
   const texture = useTexture(textureUrl);
   const creditCard = gltf.scene.getObjectByName('credit_card') as Mesh;
 
@@ -13,7 +13,7 @@ const BadgeMesh = ({ handle, tokenId, photo }: Badge) => {
     <mesh geometry={creditCard.geometry} material={creditCard.material} rotation={creditCard.rotation}>
       <mesh position={[-1.5,-0.051,0]} rotation={new Euler(Math.PI/2, 0, Math.PI/2)}>
         <circleGeometry args={[1.5, 30]} />
-        {photo ?
+        {avatar ?
           <meshBasicMaterial color="#FFF" map={texture} reflectivity={0} /> :
           <meshBasicMaterial color="#999" map={texture} reflectivity={0} />
         }

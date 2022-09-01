@@ -10,7 +10,13 @@ datasource db {
 model Badge {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
   tokenId   Int     @unique
-  handle    String
+  handle    String  @unique
   email     String
   photo     String?
+  avatar    Avatar?
+}
+
+type Avatar {
+  filename  String
+  url       String
 }
