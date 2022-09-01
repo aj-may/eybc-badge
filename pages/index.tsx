@@ -16,17 +16,12 @@ import { Canvas } from "@react-three/fiber";
 import BadgeMesh from "components/badgeMesh";
 import Editable from "components/editable";
 import Header from "components/header";
-import useBadge from "lib/useBadge";
+import useBadge, { useUpdateBadge } from "lib/useBadge";
 import { FiEdit } from "react-icons/fi";
-
-const wait = (seconds: number) => new Promise<void>((resolve) => setTimeout(resolve, seconds * 1000));
 
 const Page = () => {
   const { isLoading, isAuthenticated, hasBadge, badge } = useBadge();
-
-  const handleSave = async (value: string) => {
-    await wait(3);
-  }
+  const { updateHandle } = useUpdateBadge();
 
   if (isLoading) return <>
     <Header />
@@ -68,7 +63,7 @@ const Page = () => {
         <VStack align="stretch" flexGrow={1} spacing={6}>
           <FormControl>
             <FormLabel>Handle</FormLabel>
-            <Editable value={badge.handle} onSave={handleSave} />
+            <Editable value={badge.handle} onSave={updateHandle} />
           </FormControl>
           
           <FormControl isReadOnly>

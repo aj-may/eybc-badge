@@ -1,5 +1,5 @@
 import { ButtonGroup, Flex, IconButton, Input, InputGroup, InputLeftElement, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FiAtSign, FiCheck, FiEdit, FiX } from "react-icons/fi";
 
 type EditableProps = {
@@ -10,14 +10,15 @@ type EditableProps = {
 const Editable = ({ value, onSave}: EditableProps) => {
   const [isEditing, setEditing] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const handleSave = async () => {
-    if (!onSave) {
+    if (!onSave || !inputRef.current) {
       setEditing(false);
       return;
     }
 
     setLoading(true);
-    await onSave('test');
+    await onSave(inputRef.current.value);
     setLoading(false);
     setEditing(false);
   };
@@ -25,7 +26,7 @@ const Editable = ({ value, onSave}: EditableProps) => {
   if (isEditing) return <Flex gap={2} align="center">
     <InputGroup variant="filled" size="lg">
       <InputLeftElement pointerEvents='none'><FiAtSign /></InputLeftElement>
-      <Input defaultValue={value} />
+      <Input defaultValue={value} ref={inputRef} />
     </InputGroup>
 
     <ButtonGroup>

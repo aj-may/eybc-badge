@@ -1,5 +1,5 @@
 import { Badge } from "@prisma/client";
-import { QueryFunction, useQuery } from "@tanstack/react-query";
+import { QueryFunction, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { erc721ABI, useContractRead } from "wagmi";
@@ -24,9 +24,30 @@ export default function useBadge(addressOrName: string = '0x95e6603e219e6D08A9AE
     enabled: !!tokenId,
   });
 
+
   const isAuthenticated = sessionStatus === "authenticated";
   const isLoading = sessionStatus === "loading" || tokenIdLoading || (badgeLoading && !!tokenId);
   const hasBadge = !!tokenId;
 
   return { isAuthenticated, isLoading, hasBadge, tokenId, badge };
+}
+
+export function useUpdateBadge(addressOrName?: string) {
+  const { tokenId } = useBadge(addressOrName);
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: updateHandle } = useMutation(
+    async (handle: string) => {
+      if (!tokenId) throw new Error('tokenId not set');
+      const { data } = await axios.patch(`/api/badges/${tokenId}`, { handle });
+      return data;
+    },
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(['badge', tokenId]);
+      },
+    }
+  );
+
+  return { updateHandle };
 }
