@@ -19,7 +19,8 @@ async function main() {
   await storage.bucket('badge-user-images').setCorsConfiguration([
     {
       origin: ['*'],
-      method: ['GET'],
+      method: ['GET', 'PUT', 'OPTIONS'],
+      responseHeader: ['Content-Type', 'Access-Control-Allow-Origin'],
       maxAgeSeconds: 3600,
     },
   ]);
@@ -29,4 +30,4 @@ async function main() {
 main().catch(err => {
   console.error(err);
   process.exit(1);
-})
+});

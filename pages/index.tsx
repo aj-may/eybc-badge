@@ -8,20 +8,18 @@ import {
   Text,
   VStack,
   Center,
-  Image,
-  IconButton,
 } from "@chakra-ui/react"
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import BadgeMesh from "components/badgeMesh";
 import Editable from "components/editable";
+import EditableAvatar from "components/editableAvatar";
 import Header from "components/header";
 import useBadge, { useUpdateBadge } from "lib/useBadge";
-import { FiEdit } from "react-icons/fi";
 
 const Page = () => {
   const { isLoading, isAuthenticated, hasBadge, badge } = useBadge();
-  const { updateHandle } = useUpdateBadge();
+  const { updateHandle, updateAvatar } = useUpdateBadge();
 
   if (isLoading) return <>
     <Header />
@@ -65,27 +63,15 @@ const Page = () => {
             <FormLabel>Handle</FormLabel>
             <Editable value={badge.handle} onSave={updateHandle} />
           </FormControl>
-          
+
           <FormControl isReadOnly>
             <FormLabel>E-Mail</FormLabel>
             <Text fontSize="xl" pl={4}>{badge.email}</Text>
           </FormControl>
 
-          <FormControl isReadOnly>
+          <FormControl>
             <FormLabel>Avatar</FormLabel>
-            <Flex py={4} justifyContent="center">
-              <Image
-                src={badge.photo ? badge.photo : '/img/user.png'}
-                borderRadius="full"
-                boxSize="175px"
-                alt="Your Avatar"
-              />
-              <IconButton
-                aria-label="Edit"
-                icon={<FiEdit />}
-                variant="ghost"
-              />
-            </Flex>
+            <EditableAvatar value={badge.avatar?.url} onSave={updateAvatar} />
           </FormControl>
         </VStack>
       </Flex>
