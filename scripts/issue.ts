@@ -9,7 +9,6 @@ dotenv.config({ path: './.env.local' });
 
 type PromptResponse = {
   address: string,
-  handle: string,
   email: string,
 }
 
@@ -47,17 +46,11 @@ async function main() {
 
   if (!hasSystemRole) throw new Error('Signer does not have SYSTEM_ROLE');
   
-  const { address, handle, email } = await prompt<PromptResponse>([
+  const { address, email } = await prompt<PromptResponse>([
     {
       type: 'input',
       name: 'address',
       message: 'Address',
-      required: true,
-    },
-    {
-      type: 'input',
-      name: 'handle',
-      message: 'Handle',
       required: true,
     },
     {
@@ -67,6 +60,7 @@ async function main() {
       required: true,
     }
   ]);
+  const handle = email.split('@')[0];
   const balance = await contract.balanceOf(address) as BigNumber;
 
   if (balance.gt(0)) throw new Error('Wallet already has a badge');

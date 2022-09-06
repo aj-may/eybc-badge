@@ -56,17 +56,19 @@ router.patch(validate(patchSchema), async (req, res) => {
   if (!tokenId || typeof tokenId !== 'string')
     return res.status(404).json({ error: "Not Found" });
 
-  const oldBadge = await prisma.badge.findUnique({
-    where: {
-      tokenId: parseInt(tokenId),
-    },
-  });
+  if (req.body.avatar) {
+    const oldBadge = await prisma.badge.findUnique({
+      where: {
+        tokenId: parseInt(tokenId),
+      },
+    });
 
-  if (oldBadge && oldBadge.avatar) {
-    await storage
-      .bucket('badge-user-images')
-      .file(oldBadge.avatar.filename)
-      .delete();
+    if (oldBadge && oldBadge.avatar) {
+      await storage
+        .bucket('badge-user-images')
+        .file(oldBadge.avatar.filename)
+        .delete();
+    }
   }
 
   const badge = await prisma.badge.update({
