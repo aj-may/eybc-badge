@@ -37,7 +37,7 @@ const prismaClient = new PrismaClient();
 
 const getFeeData = async (): Promise<FeeData> => {
   const { data } = await axios.get('https://gasstation-mainnet.matic.network/v2');
-  return data.safeLow;
+  return data.fast;
 }
 
 async function main() {
