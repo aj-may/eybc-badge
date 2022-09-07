@@ -14,7 +14,7 @@ const DropzoneUploader = ({ onDrop }: DropzoneUploaderProps) => {
     if (onDrop) onDrop(file);
   };
   const { getRootProps, getInputProps, isDragAccept, isDragReject } = useDropzone({
-    accept: {'image/png': [], 'image/jpeg': []},
+    accept: {'image/png': [], 'image/jpeg': [], 'image/gif': []},
     multiple: false,
     maxSize: 500000,
     onDropAccepted,
