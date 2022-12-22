@@ -8,12 +8,8 @@ import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/draft-ERC721Votes.sol";
 import "@randombits/contracts/contracts/ERC721Soulbound.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract Badge is ERC721, ERC721Enumerable, ERC721Burnable, ERC721Soulbound, AccessControlEnumerable, EIP712, ERC721Votes {
-    using Counters for Counters.Counter;
-
-    Counters.Counter private _tokenIdCounter;
     bytes32 public constant ISSUER_ROLE = keccak256("ISSUER_ROLE");
     string private _metadataURI;
 
@@ -37,9 +33,7 @@ contract Badge is ERC721, ERC721Enumerable, ERC721Burnable, ERC721Soulbound, Acc
       _metadataURI = metadataURI;
     }
 
-    function issue(address to) public onlyRole(ISSUER_ROLE) {
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
+    function issue(address to, uint256 tokenId) public onlyRole(ISSUER_ROLE) {
         _safeMint(to, tokenId);
     }
 
@@ -53,7 +47,6 @@ contract Badge is ERC721, ERC721Enumerable, ERC721Burnable, ERC721Soulbound, Acc
         internal
         override(ERC721, ERC721Enumerable, ERC721Soulbound)
     {
-        require(from == address(0) || to == address(0), "ERC721Soulbound: token is non-transferable");
         super._beforeTokenTransfer(from, to, tokenId, batchSize);
     }
 

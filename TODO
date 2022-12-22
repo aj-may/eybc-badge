@@ -1,0 +1,9 @@
+- Allow user to update handle
+- Allow user to update avatar
+- dev credentials for gcloud
+  - or switch to IPFS?
+- Improved Static badges with new next image generator thing
+- Handle unique constraints more gracefully with nice errors
+- When revoke badge, should free up handle, email, address
+  - remove unique contraints and just check for dupes before issuance?
+- Fix Prod build

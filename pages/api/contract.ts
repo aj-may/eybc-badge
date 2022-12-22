@@ -1,20 +1,19 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiHandler } from "next";
 
-type MetadataResponse = {
-  name: string,
-  description: string,
-  image: string,
-  external_link: string,
-}
+const handler: NextApiHandler = (req, res) => {
+  switch (req.method) {
+    case "GET":
+      res.json({
+        name: "EY Blockchain Badge",
+        description: "",
+        image: "https://badge.eybc.xyz/img/placeholder.png",
+        external_link: "https://badge.eybc.xyz/",
+      });
+      break;
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<MetadataResponse>
-) {
-  res.json({
-    name: 'EY Blockchain Badge',
-    description: '',
-    image: 'https://badge.eybc.xyz/img/placeholder.png',
-    external_link: 'https://badge.eybc.xyz/',
-  });
-}
+    default:
+      res.status(405).send("Method Not Allowed");
+  }
+};
+
+export default handler;

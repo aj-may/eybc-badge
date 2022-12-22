@@ -1,82 +1,57 @@
 import {
   Box,
-  Container,
   Flex,
   FormControl,
   FormLabel,
-  Spinner,
   Text,
   VStack,
-  Center,
-} from "@chakra-ui/react"
+} from "@chakra-ui/react";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import BadgeMesh from "components/badgeMesh";
 import Editable from "components/editable";
 import EditableAvatar from "components/editableAvatar";
-import Header from "components/header";
-import useBadge, { useUpdateBadge } from "lib/useBadge";
+import { RequireBadge } from "components/RequireBadge";
+import { useUser } from "lib/hooks/useUser";
 
 const Page = () => {
-  const { isLoading, isAuthenticated, hasBadge, badge } = useBadge();
-  const { updateHandle, updateAvatar } = useUpdateBadge();
+  const { handle, avatar, email } = useUser();
+  // const { updateHandle, updateAvatar } = useUpdateBadge();
 
-  if (isLoading) return <>
-    <Header />
+  if (!handle || avatar === undefined) return null;
 
-    <Center h={500}>
-      <Spinner size='xl' />
-    </Center>
-  </>;
-
-  if (!isAuthenticated) return <>
-    <Header />
-
-    <Center h={500}>
-      <Text fontSize="xl">Connect your wallet to continue...</Text>
-    </Center>
-  </>;
-
-  if (!hasBadge || !badge) return <>
-    <Header />
-
-    <Center h={500}>
-      <Text fontSize="xl">The connected wallet does not have an EY Blockchain Badge 😥</Text>
-    </Center>
-  </>;
-
-  return <>
-    <Header />
-
-    <Container maxW="container.md" pt="10vh" pb={10}>
+  return (
+    <RequireBadge>
       <Flex gap={10}>
         <Box bg="black" w={350} h={450} borderRadius="lg">
-          <Canvas camera={{ position: [0,0,-10]}}>
+          <Canvas camera={{ position: [0, 0, -10] }}>
             <ambientLight intensity={0.9} />
             <OrbitControls autoRotate />
-            <BadgeMesh {...badge} />
+            <BadgeMesh handle={handle} avatar={avatar} />
           </Canvas>
         </Box>
 
         <VStack align="stretch" flexGrow={1} spacing={6}>
           <FormControl>
             <FormLabel>Handle</FormLabel>
-            <Editable value={badge.handle} onSave={updateHandle} />
+            <Editable value={handle} onSave={async () => {}} />
           </FormControl>
 
           <FormControl isReadOnly>
             <FormLabel>E-Mail</FormLabel>
-            <Text fontSize="xl" pl={4}>{badge.email}</Text>
+            <Text fontSize="xl" pl={4}>
+              {email}
+            </Text>
           </FormControl>
 
           <FormControl>
             <FormLabel>Avatar</FormLabel>
-            <EditableAvatar value={badge.avatar?.url} onSave={updateAvatar} />
+            <EditableAvatar value={avatar?.url} onSave={async () => {}} />
           </FormControl>
         </VStack>
       </Flex>
-    </Container>
-  </>;
+    </RequireBadge>
+  );
 };
 
 export default Page;

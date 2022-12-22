@@ -9,14 +9,27 @@ datasource db {
 
 model Badge {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  tokenId   Int     @unique
   handle    String  @unique
-  email     String
-  photo     String?
+  email     String  @unique
+  address   String  @unique
   avatar    Avatar?
+  status    Status  @default(UNVERIFIED)
+  otp       OTP?
+}
+
+enum Status {
+  UNVERIFIED
+  PENDING
+  ISSUED
+  REVOKED
 }
 
 type Avatar {
   filename  String
   url       String
+}
+
+type OTP {
+  code      String
+  expires   DateTime
 }
